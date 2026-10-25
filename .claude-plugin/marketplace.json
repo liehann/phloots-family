@@ -1,0 +1,11 @@
+{
+  "name": "phloots-family",
+  "owner": { "name": "Liehann" },
+  "plugins": [
+    {
+      "name": "meal-plan",
+      "source": "./plugins/meal-plan",
+      "description": "Weekly dinner plan and Sprouts shopping list in a side pane; changes go to Claude to update the Instacart cart."
+    }
+  ]
+}

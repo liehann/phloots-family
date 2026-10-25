@@ -1,0 +1,6 @@
+{
+  "name": "meal-plan",
+  "version": "0.2.0",
+  "description": "Weekly dinner plan and Sprouts shopping list in a side pane; changes are sent to Claude to update the Instacart cart.",
+  "types": "./types/index.d.ts"
+}
