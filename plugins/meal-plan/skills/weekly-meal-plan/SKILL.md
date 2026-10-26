@@ -12,6 +12,7 @@ description: Plan the week's family dinners and build the Sprouts Instacart orde
 - Friday is pod dinner with friends (takeout or out). Weekend meals are planned only when he asks.
 - Kids' lunches need fruit, sandwich bread or rolls, deli meat and crunchy snacks. He says which of these he already has.
 - He doesn't eat seafood. No onion in the bacon pasta.
+- Garlic is Costco minced garlic: write garlic in recipes as minced volume and weight (1 clove = 1 tsp = about 5 g).
 
 ## Steps
 
@@ -20,6 +21,10 @@ description: Plan the week's family dinners and build the Sprouts Instacart orde
 3. **A recipe not in Drive: ask, never assume.** Ask what goes in it. Once he answers, write it as a Google Doc in the Recipes folder (ingredients with amounts, steps, notes), then add its ingredients.
 4. **Build the Instacart cart** at Sprouts Farmers Market (delivery). Leave items already in the cart unless he says otherwise. Check every quick-add result and fix wrong matches with a search:
    - Brands: Sprouts Whole Milk; Oroweat whole wheat bread; Sprouts green leaf lettuce (Tanimura & Antle Sweet Gem as backup); Mission Carb Balance tortillas.
+   - **Never buy Hero Bread Hawaiian rolls** (too expensive, taste bad). If King's Hawaiian isn't stocked, leave Hawaiian rolls out and tell him.
+   - **No substitutes of your own.** When the exact item isn't stocked, leave it out and tell him, unless he has named an acceptable alternative.
+   - **Replacements: refund by default.** Shopper replacements are off except for items he has allowlisted or given a replacement for. The cart tool can't set this, so remind him to set "Don't replace / refund" in Instacart.
+   - Once he says he has edited the order himself or tells you to stop, make no more cart changes.
    - Generally non-organic. Bulk sizes when offered (spices). Apples: balance cost against varieties they like; organic Cosmic Crisp is often poor.
    - Burger buns (Artesano) come from Safeway, not this order. Japanese curry pork comes from the Asian grocery: only the veg goes in this order.
    - Past orders can hold wrong substitutions, so don't copy purchase history blindly.
