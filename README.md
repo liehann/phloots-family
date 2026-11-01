@@ -30,3 +30,9 @@ claude plugin install meal-plan@phloots-family
 ### Use
 
 Give Claude the week's meals in day order plus what you need and don't need. It builds the cart and fills the pane. Open the pane with `/meal-plan`.
+
+## designs
+
+Printable parts for things around the house. Each folder has its own README.
+
+- `designs/caliper-battery-cover`: slide-on battery cover for the Neiko 01407A style 6" digital caliper (OpenSCAD source, STL, fit-test coupons).
