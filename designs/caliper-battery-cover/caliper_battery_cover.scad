@@ -15,9 +15,10 @@
 part = "cover";            // "cover" or "fit_test"
 
 // ---------- MEASURE these on the caliper ----------
-channel_w   = 15.0;        // A: width of the channel, groove bottom to groove bottom
-opening_w   = 12.6;        // B: visible opening between the two lips
-cover_l     = 18.0;        // D: closed end of the channel to the edge of the housing
+opening_w   = 12.0;        // B: visible opening between the two lips (measured 12)
+lip_w       = 1.0;         // how far each lip overhangs the groove (ASSUMED, measure if you can)
+channel_w   = opening_w + 2 * lip_w;   // A: groove bottom to groove bottom (14 with the defaults)
+cover_l     = 9.0;         // D: closed end of the channel to the edge of the housing (measured 9)
 plate_t     = 1.5;         // E: housing surface down to the bottom of the groove
 tongue_t    = 0.8;         // C: height of the groove (the slot the tongue rides in)
 
@@ -26,15 +27,18 @@ clearance   = 0.15;        // removed from the width and from the tongue height
 lead_chamfer = 0.4;        // chamfer on the leading (inner) edge of the tongues
 
 // ---------- optional features ----------
-grip_ribs   = 3;           // raised ribs for your thumb near the open end (0 = none)
+grip_ribs   = 2;           // raised ribs for your thumb near the open end (0 = none)
 rib_w       = 0.6;
 rib_h       = 0.35;
 rib_pitch   = 1.6;
-rib_inset   = 2.0;         // distance of first rib from the open end
+rib_inset   = 3.0;         // distance of first rib from the open end
 
-detent_d    = 0;           // diameter of a round bump on the underside (0 = none).
-detent_h    = 0.3;         // how far it protrudes
-detent_x    = 4.0;         // distance from the open end
+// Two snap bumps on the underside at the open end, one near each side edge.
+// They drop into the two dimples in the housing.
+detent_d    = 1.2;         // bump diameter (0 = none)
+detent_h    = 0.3;         // how far it protrudes below the underside
+detent_x    = 1.5;         // bump centre, distance in from the open end
+detent_inset = 1.5;        // bump centre, distance in from each side edge of the cover
 
 battery_pad_h = 0;         // pad on the underside that presses the cell down (0 = none)
 battery_pad_d = 8.0;
@@ -46,8 +50,6 @@ end_lip_t   = 1.0;
 $fn = 48;
 
 // ---------------------------------------------------------------------------
-
-lip_w = (channel_w - opening_w) / 2;        // how far each housing lip overhangs
 
 module cover_body(w = channel_w, len = cover_l) {
     ww = w - clearance;                     // full width including tongues
@@ -78,12 +80,14 @@ module grip() {
 module detent() {
     if (detent_d > 0) {
         cx = cover_l - detent_x;
-        intersection() {
-            translate([cx, 0, detent_d / 2 - detent_h]) sphere(d = detent_d);
-            // keep only the part below the underside plus a little inside the tongue layer
-            translate([cx - detent_d, -detent_d, -detent_h])
-                cube([2 * detent_d, 2 * detent_d, detent_h + tongue_t - clearance]);
-        }
+        cy = (channel_w - clearance) / 2 - detent_inset;
+        for (sy = [-1, 1])
+            intersection() {
+                translate([cx, sy * cy, detent_d / 2 - detent_h]) sphere(d = detent_d);
+                // keep only the part below the underside plus a little inside the tongue layer
+                translate([cx - detent_d, sy * cy - detent_d, -detent_h])
+                    cube([2 * detent_d, 2 * detent_d, detent_h + tongue_t - clearance]);
+            }
     }
 }
 

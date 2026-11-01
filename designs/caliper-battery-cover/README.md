@@ -23,16 +23,16 @@ Files:
 
 ## Default dimensions
 
-These are best guesses from the photo and from published covers for the same
-housing, not measurements of your caliper. Check them before printing the final
-part.
+B and D were measured on the caliper. The rest are still estimates. The two
+snap bumps at the open end match the two dimples in the housing, about 1.5 mm
+in from the side edges and from the opening.
 
 | Letter | Parameter | Default | What to measure |
 | --- | --- | --- | --- |
-| A | `channel_w` | 15.0 mm | Width of the channel from the bottom of one groove to the bottom of the other. Hardest one to see. Use the fit test coupons instead if in doubt. |
-| B | `opening_w` | 12.6 mm | Visible opening between the two lips, measured at the housing surface. |
+| A | `channel_w` | 14.0 mm | Width of the channel from the bottom of one groove to the bottom of the other. Set through `lip_w` (1.0 mm per side, estimated). Hardest one to see, so use the fit test coupons. |
+| B | `opening_w` | 12.0 mm | Visible opening between the two lips, measured at the housing surface. Measured. |
 | C | `tongue_t` | 0.8 mm | Height of the groove. A feeler gauge or the depth rod works. |
-| D | `cover_l` | 18.0 mm | Along the slide direction, from the closed end of the channel to the edge of the housing. |
+| D | `cover_l` | 9.0 mm | Along the slide direction, from the closed end of the channel to the edge of the housing. Measured. The cover is wider than it is long. |
 | E | `plate_t` | 1.5 mm | From the housing surface down to the bottom of the groove. |
 
 ![cross section](cross_section.png)
@@ -41,21 +41,25 @@ part.
 
 1. Print `fit_test.stl`. Slide each coupon into the channel from the beam end.
    The coupon that is snug but moves without force gives you `channel_w`
-   (1 notch = 14.5, 2 notches = 15.0, 3 notches = 15.5). If none fits, change
-   `channel_w` and rebuild.
+   (1 notch = 13.5, 2 notches = 14.0, 3 notches = 14.5). If none fits, change
+   `lip_w` and rebuild.
 2. Measure B, C, D and E and set them in the `.scad` file, or pass them to
    `build.py`:
 
    ```
-   python3 build.py --channel-w 15.0 --opening-w 12.6 --cover-l 18 --plate-t 1.5 --tongue-t 0.8
+   python3 build.py --opening-w 12 --lip-w 1.0 --cover-l 9 --plate-t 1.5 --tongue-t 0.8
    ```
 
 3. Print `cover.stl`.
 
-Optional features in the `.scad` file, all off by default because their
-position depends on the housing:
+The underside is one flat plane: the centre of the cover and the tongues share
+the same bottom face, so the cover presses the cell down to the level of the
+grooves. The thicker centre section stands up between the lips, flush with the
+housing surface.
 
-- `detent_d`: a small round bump on the underside that clicks into a notch.
+Optional features in the `.scad` file:
+
+- `detent_d`, `detent_x`, `detent_inset`: the two snap bumps under the open end (on by default, 1.2 mm wide, 0.3 mm proud). Set `detent_d = 0` to remove them.
 - `battery_pad_h`: a pad on the underside that presses the cell against its contact if the cell sits loose.
 - `end_lip_h`: a downward lip at the open end that closes off the housing opening.
 

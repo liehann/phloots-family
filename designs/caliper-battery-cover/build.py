@@ -5,7 +5,7 @@ This mirrors caliper_battery_cover.scad so the STLs can be produced without
 OpenSCAD installed. The .scad file is the one to edit; if you have OpenSCAD,
 `openscad -o cover.stl caliper_battery_cover.scad` is the simpler route.
 
-Usage:  python3 build.py [--channel-w 15.0] [--opening-w 12.6] [--cover-l 18]
+Usage:  python3 build.py [--opening-w 12] [--lip-w 1.0] [--cover-l 9]
                          [--plate-t 1.5] [--tongue-t 0.8] [--clearance 0.15]
 Outputs: cover.stl, fit_test.stl, preview_cover.png, cross_section.png
 """
@@ -70,14 +70,19 @@ def battery_pad(p):
 
 
 def detent(p):
+    """Two snap bumps under the open end, one near each side edge."""
     if p.detent_d <= 0:
         return []
     cx = p.cover_l - p.detent_x
-    sph = trimesh.creation.icosphere(subdivisions=3, radius=p.detent_d / 2)
-    sph.apply_translation([cx, 0, p.detent_d / 2 - p.detent_h])
-    keep = abox(cx - p.detent_d, -p.detent_d, -p.detent_h,
-                2 * p.detent_d, 2 * p.detent_d, p.detent_h + p.tongue_t - p.clearance)
-    return [trimesh.boolean.intersection([sph, keep], engine="manifold")]
+    cy = (p.channel_w - p.clearance) / 2 - p.detent_inset
+    bumps = []
+    for sy in (-1, 1):
+        sph = trimesh.creation.icosphere(subdivisions=3, radius=p.detent_d / 2)
+        sph.apply_translation([cx, sy * cy, p.detent_d / 2 - p.detent_h])
+        keep = abox(cx - p.detent_d, sy * cy - p.detent_d, -p.detent_h,
+                    2 * p.detent_d, 2 * p.detent_d, p.detent_h + p.tongue_t - p.clearance)
+        bumps.append(trimesh.boolean.intersection([sph, keep], engine="manifold"))
+    return bumps
 
 
 def end_lip(p):
@@ -113,10 +118,11 @@ def render_preview(mesh, path, title):
     import matplotlib.pyplot as plt
     from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
-    fig = plt.figure(figsize=(10, 4.5), dpi=130)
-    views = [("top (outside face)", 55, -60), ("underside (tongues + chamfer)", -40, -120)]
+    fig = plt.figure(figsize=(13, 4.5), dpi=130)
+    views = [("top (outside face)", 55, -60), ("underside, open end toward you", -35, -20),
+             ("straight on from below", -90, -90)]
     for k, (name, elev, azim) in enumerate(views):
-        ax = fig.add_subplot(1, 2, k + 1, projection="3d")
+        ax = fig.add_subplot(1, 3, k + 1, projection="3d")
         tri = mesh.vertices[mesh.faces]
         coll = Poly3DCollection(tri, facecolor="#9bb7d4", edgecolor="#2b3a4a", linewidths=0.15)
         ax.add_collection3d(coll)
@@ -191,28 +197,33 @@ def render_cross_section(p, path):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--channel-w", type=float, default=15.0)
-    ap.add_argument("--opening-w", type=float, default=12.6)
-    ap.add_argument("--cover-l", type=float, default=18.0)
+    ap.add_argument("--opening-w", type=float, default=12.0)
+    ap.add_argument("--lip-w", type=float, default=1.0,
+                    help="lip overhang per side; channel_w = opening_w + 2 * lip_w unless --channel-w is given")
+    ap.add_argument("--channel-w", type=float, default=None)
+    ap.add_argument("--cover-l", type=float, default=9.0)
     ap.add_argument("--plate-t", type=float, default=1.5)
     ap.add_argument("--tongue-t", type=float, default=0.8)
     ap.add_argument("--clearance", type=float, default=0.15)
     ap.add_argument("--lead-chamfer", type=float, default=0.4)
-    ap.add_argument("--grip-ribs", type=int, default=3)
+    ap.add_argument("--grip-ribs", type=int, default=2)
     ap.add_argument("--rib-w", type=float, default=0.6)
     ap.add_argument("--rib-h", type=float, default=0.35)
     ap.add_argument("--rib-pitch", type=float, default=1.6)
-    ap.add_argument("--rib-inset", type=float, default=2.0)
+    ap.add_argument("--rib-inset", type=float, default=3.0)
     ap.add_argument("--battery-pad-h", type=float, default=0.0)
     ap.add_argument("--battery-pad-d", type=float, default=8.0)
     ap.add_argument("--battery-x", type=float, default=8.0)
-    ap.add_argument("--detent-d", type=float, default=0.0)
+    ap.add_argument("--detent-d", type=float, default=1.2)
     ap.add_argument("--detent-h", type=float, default=0.3)
-    ap.add_argument("--detent-x", type=float, default=4.0)
+    ap.add_argument("--detent-x", type=float, default=1.5)
+    ap.add_argument("--detent-inset", type=float, default=1.5)
     ap.add_argument("--end-lip-h", type=float, default=0.0)
     ap.add_argument("--end-lip-t", type=float, default=1.0)
     ap.add_argument("--out", default=HERE)
     p = ap.parse_args()
+    if p.channel_w is None:
+        p.channel_w = p.opening_w + 2 * p.lip_w
 
     c = cover(p)
     f = fit_test(p)
